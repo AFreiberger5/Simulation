@@ -25,13 +25,15 @@ public class StateController : MonoBehaviour
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        nextWayPoint = 1;
         
     }
 
-    public void SetupAI(bool aiActivationFromTankManager, List<Transform> wayPointsFromTankManager)
+    public void SetupAI(bool aiActivationFromTriggerZone, List<Transform> wayPointsFromTriggerZone)
     {
-        wayPointList = wayPointsFromTankManager;
-        aiActive = aiActivationFromTankManager;
+        
+        wayPointList = wayPointsFromTriggerZone;
+        aiActive = aiActivationFromTriggerZone;
         if (aiActive)
         {
             navMeshAgent.enabled = true;

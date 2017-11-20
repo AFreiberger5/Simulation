@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using UnityEditor.AI;
+
 
 public class House : MonoBehaviour
 {
@@ -11,26 +12,49 @@ public class House : MonoBehaviour
     public StoneBlock SBlock;
     public AirBlock ABlock;
 
+    
     [Range(5, 10)]
     public int WallHeight = 5;
     [Range(5, 10)]
     public int HiddenFloorLayer = 10;
     public GameObject[] HouseNodes;
-
+    public Transform[] WayPointsNodes;
+    public GameObject NPC;
+    [HideInInspector] public StateController m_StateController;
+    
     private bool m_Spawned = false;
     private int[][,] m_HouseBlocks;
     private Block[,,] m_HouseArray;
+    private int Node;
+    private void Awake()
+    {
+      
+        m_StateController = NPC.GetComponent<StateController>();
+    }
     private void OnTriggerEnter(Collider other)
     {
-        if (!m_Spawned)
+        if (!m_Spawned && other.tag == "Player")
+        {
+            Node = Random.Range(0, HouseNodes.Length);
             CreateHouse();
-        else
+            //navmesh builden
+            
+            List<Transform> waypoints = new List<Transform>();
+            foreach (Transform Child in HouseNodes[Node].GetComponentInChildren<Transform>())
+            {
+                waypoints.Add(Child);
+            }
+
+            m_StateController.SetupAI(true,waypoints);
+        }
+        else if (m_Spawned && other.tag == "Player")
             DeleteHouse();
     }
 
     private void CreateHouse()
     {
-        int Node = UnityEngine.Random.Range(0, HouseNodes.Length - 1);
+
+
         m_HouseBlocks = new int[WallHeight + 3][,];
         m_HouseBlocks[0] = Ground;
         for (int i = 1; i < WallHeight + 1; i++)
@@ -39,6 +63,9 @@ public class House : MonoBehaviour
         }
         m_HouseBlocks[WallHeight + 1] = Roof1;
         m_HouseBlocks[WallHeight + 2] = Roof2;
+        if (WallHeight >= HiddenFloorLayer)
+            m_HouseBlocks[HiddenFloorLayer] = Ground;
+
         m_HouseArray = new Block[Ground.GetLength(0), m_HouseBlocks.Length, Ground.GetLength(1)];
 
         List<Block> Blocks = new List<Block>(GameObject.FindObjectsOfType<Block>());
@@ -64,7 +91,7 @@ public class House : MonoBehaviour
                 for (int z = 0; z < m_HouseBlocks[y].GetLength(1); z++)
                 {
                     //todo: Try to use Noise instead of randomrange
-                    int Block = UnityEngine.Random.Range(0,5);
+                    int Block = UnityEngine.Random.Range(0, 5);
                     if (m_HouseBlocks[y][x, z] == 4)
                         m_HouseArray[x, y, z] = Instantiate(WooBlock, new Vector3(x + (int)HouseNodes[Node].transform.position.x, y + (int)HouseNodes[Node].transform.position.y, z + (int)HouseNodes[Node].transform.position.z), Quaternion.identity);
                     else if (m_HouseBlocks[y][x, z] == 5)
@@ -170,14 +197,14 @@ public class House : MonoBehaviour
         }
         catch
         {
-            
+
             Debug.Log(x);
             Debug.Log(y);
             Debug.Log(z);
             Debug.Log(m_HouseArray.GetLength(0));
             Debug.Log(m_HouseArray.GetLength(1));
             Debug.Log(m_HouseArray.GetLength(2));
-           
+
         }
 
         return Field;
