@@ -7,6 +7,7 @@ TagManager:
   - Plate1
   - Plate2
   - StoneBlock
+  - NPC
   layers:
   - Default
   - TransparentFX

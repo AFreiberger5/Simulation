@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class PressurePlate : MonoBehaviour
 {
-
-	// Use this for initialization
-	void Start ()
+    AudioSource audioClip;
+    void Awake()
     {
-		
-	}
-	
-	// Update is called once per frame
-	void Update ()
+        audioClip = GetComponent<AudioSource>();       
+    }
+    private void OnTriggerEnter(Collider other)
     {
-		
-	}
+        audioClip.Play();
+    }
 }

@@ -3,28 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class World : Singleton<World>
+public  class World : Singleton<World>
 {
-    protected World() { }
+    protected  World() { }
 
     public int m_AtlasCols;
     public int m_AtlasRows;
 
-    public WoodBlock WooBlock;
+    public WoodBlock wooBlock;
     public GrassBlock GBlock;
     public StoneBlock SBlock;
     public AirBlock ABlock;
-    
-    private Block[,,] m_WorldArray;
+    public WaterBlock EditorWater;
+    public static WaterBlock waterBlock;
+    public DoorBottom bottomBlock;
+    public DoorTop topBlock;
+
+    private static Block[,,] m_WorldArray;
     private float[] m_GrassValues = { 13.2f, 0.75f, 1.2f };
     private float[] m_StoneValues = { 2.7f, 0.75f, 1.1f };
 
 
     void Start()
     {
+        waterBlock = EditorWater;
         m_WorldArray = new Block[40, 8, 40];
             GenerateTerrain();
     }
+  
 
     void GenerateTerrain()
     {
@@ -38,9 +44,14 @@ public class World : Singleton<World>
                 continue;
             if (B == ABlock)
                 continue;
-            if (B == WooBlock)
+            if (B == wooBlock)
                 continue;
-
+            if (B == waterBlock)
+                continue;
+            if (B == bottomBlock)
+                continue;
+            if (B == topBlock)
+                continue;
             Destroy(B.gameObject);
         }
 
@@ -117,7 +128,19 @@ public class World : Singleton<World>
         return Mathf.FloorToInt(map(NoiseHeight, 0.7f, 1.5f, 0.0f, Factor));
     }
 
-  
+    public static void MakeCoffe(RaycastHit _RHit, Transform _world)
+    {
+        int x = (int)_RHit.transform.position.x - (int)_world.transform.position.x;
+        int y = (int)_RHit.transform.position.y - (int)_world.transform.position.y;
+        int z = (int)_RHit.transform.position.z - (int)_world.transform.position.z;
+
+        if (m_WorldArray[x, y + 1, z].tag == "ABlock")
+        {
+            Destroy(m_WorldArray[x, y, z]);
+            m_WorldArray[x, y, z] = Instantiate(waterBlock, new Vector3(x , y , z), Quaternion.identity);
+        }
+
+    }
 
     private float map(float value,
                               float istart,

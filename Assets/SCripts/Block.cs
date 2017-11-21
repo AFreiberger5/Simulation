@@ -10,7 +10,9 @@ public enum BlockType
     STONE,
     AIR,
     WOOD,
-    RANDOM
+    RANDOM,
+    DOORBOTTOM,
+    DOORTOP
 }
 
 [Flags]

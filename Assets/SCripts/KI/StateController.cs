@@ -22,7 +22,7 @@ public class StateController : MonoBehaviour
     private bool aiActive;
 
 
-    void Awake()
+    void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         nextWayPoint = 1;
