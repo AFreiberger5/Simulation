@@ -20,14 +20,19 @@ public class House : MonoBehaviour
     public int WallHeight = 5;
     [Range(5, 10)]
     public int HiddenFloorLayer = 10;
-    public GameObject[] HouseNodes;
-    public Transform[] WayPointsNodes;
+    public GameObject[] House1Nodes;
+    public GameObject[] House2Nodes;
     public GameObject NPC;
+    [HideInInspector] public Transform[] WayPoints;    
     [HideInInspector] public StateController m_StateController;
     
     private bool m_Spawned = false;
     private int[][,] m_HouseBlocks;
+    private int[][,] m_House1Blocks;
+    private int[][,] m_House2Blocks;
     private Block[,,] m_HouseArray;
+    private Block[,,] m_House1Array;
+    private Block[,,] m_House2Array;
     private int Node;
     private static bool doorRay = false;
     private void Awake()
@@ -38,15 +43,21 @@ public class House : MonoBehaviour
     {
         if (!m_Spawned && other.tag == "Player")
         {
-            Node = Random.Range(0, HouseNodes.Length);
-            CreateHouse();
+            Node = Random.Range(0, House1Nodes.Length);
+            CreateHouse(Node, House1Nodes, 1);
             //navmesh builden
             
+            //take patrolpoints from first house
             List<Transform> waypoints = new List<Transform>();
-            foreach (Transform Tr in WayPointsNodes)
+            Transform[] tr = House1Nodes[Node].GetComponentsInChildren<Transform>() ;
+            foreach (Transform TR in tr)
             {
-                waypoints.Add(Tr);
+                waypoints.Add(TR);
             }
+
+            //spawn 2nd house
+            Node = Random.Range(0, House2Nodes.Length);
+            CreateHouse(Node, House2Nodes, 2);
 
             m_StateController.SetupAI(true,waypoints);
         }
@@ -54,9 +65,11 @@ public class House : MonoBehaviour
             DeleteHouse();
     }
    
-    private void CreateHouse()
+    private void CreateHouse(int _node, GameObject[] _housenodes, int _number)
     {
+        
 
+        GameObject[] HouseNodes = _housenodes;
         m_HouseBlocks = new int[WallHeight + 3][,];
         m_HouseBlocks[0] = Ground;
         for (int i = 1; i < WallHeight + 1; i++)
@@ -136,12 +149,46 @@ public class House : MonoBehaviour
             }
 
         }
+        //check which house gets which door, first gets manual door
+        if (!doorRay)
+        {
+            //todo: find out why the first house isn't getting spawned
+            Destroy(m_HouseArray[4, 1, 2]);
+            Destroy(m_HouseArray[4, 2, 2]);
+            m_HouseArray[4, 1, 2] = Instantiate(bottomBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 1 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity);
+            m_HouseArray[4, 2, 2] = Instantiate(topBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 2 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity);
+            m_HouseArray[4, 1, 2].tag = "RayDoor";
+            m_HouseArray[4, 2, 2].tag = "RayDoor";
+            doorRay = true;
+        }
+        else
+        {
+            Destroy(m_HouseArray[4, 1, 2]);
+            Destroy(m_HouseArray[4, 2, 2]);
+            m_HouseArray[4, 1, 2] = Instantiate(bottomBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 1 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity);
+            m_HouseArray[4, 2, 2] = Instantiate(topBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 2 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity);
+            m_HouseArray[4, 1, 2].tag = "TriggerDoor";
+            m_HouseArray[4, 2, 2].tag = "TriggerDoor";         
 
-        for (int x = 0; x < m_HouseArray.GetLength(0); ++x)
-            for (int y = 0; y < m_HouseArray.GetLength(1); ++y)
-                for (int z = 0; z < m_HouseArray.GetLength(2); ++z)
-                    m_HouseArray[x, y, z].CreateMesh(GetNeighbours(x, y, z));
+        }
+        if (_number == 1)
+        {
+            m_House1Array = m_HouseArray;
+            for (int x = 0; x < m_House1Array.GetLength(0); ++x)
+                for (int y = 0; y < m_House1Array.GetLength(1); ++y)
+                    for (int z = 0; z < m_House1Array.GetLength(2); ++z)
+                        m_House1Array[x, y, z].CreateMesh(GetNeighbours(x, y, z));
+        }
+        else if(_number == 2)
+        {
+            m_House2Array = m_HouseArray;
+            for (int x = 0; x < m_House2Array.GetLength(0); ++x)
+                for (int y = 0; y < m_House2Array.GetLength(1); ++y)
+                    for (int z = 0; z < m_House2Array.GetLength(2); ++z)
+                        m_House2Array[x, y, z].CreateMesh(GetNeighbours(x, y, z));
 
+        }
+        
         m_Spawned = true;
     }
     private void DeleteHouse()

@@ -8,6 +8,8 @@ TagManager:
   - Plate2
   - StoneBlock
   - NPC
+  - RayDoor
+  - TriggerDoor
   layers:
   - Default
   - TransparentFX
