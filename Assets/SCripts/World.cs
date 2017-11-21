@@ -81,7 +81,7 @@ public  class World : Singleton<World>
 
     }
 
-    private NeighboursField GetNeighbours(int x, int y, int z)
+    private static NeighboursField GetNeighbours(int x, int y, int z)
     {
         NeighboursField Field = 0;
 
@@ -138,6 +138,7 @@ public  class World : Singleton<World>
         {
             Destroy(m_WorldArray[x, y, z]);
             m_WorldArray[x, y, z] = Instantiate(waterBlock, new Vector3(x , y , z), Quaternion.identity);
+            m_WorldArray[x, y, z].CreateMesh(GetNeighbours(x, y, z));
         }
 
     }

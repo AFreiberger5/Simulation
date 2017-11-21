@@ -17,10 +17,11 @@ public class DoorBottom : Block
         m_UVs.Clear();
         m_BlockType = BlockType.DOORBOTTOM;
 
-        RenderFront(171);
-        RenderBack(171);
-        RenderLeft(244);
-        RenderRight(244);
+        RenderFront(244);
+        RenderBack(244);
+        RenderLeft(145);
+        RenderRight(145);
+        RenderBottom(244);
 
         GenerateMesh();
     }

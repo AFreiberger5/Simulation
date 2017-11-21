@@ -7,14 +7,14 @@ public class CharController : MonoBehaviour
 {
     public float m_speed =1;
     public float m_rotationSpeed = 50;
-    public float m_eyeSight = 10;
+    public float m_eyeSight = 1;
     public Camera m_Cam;
     public GameObject Za_Warudo;
 
 
     private CharacterController m_Player;
     private float m_YSpeed;
-    private bool m_BucketEmpty = true;
+    private bool m_BucketEmpty = false;
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -66,14 +66,16 @@ public class CharController : MonoBehaviour
         
         Ray R = m_Cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit RHit;
-        Physics.Raycast(R,out RHit, m_eyeSight);
-        if(RHit.transform.gameObject.tag == "StoneBlock" && m_BucketEmpty == false)
+        if (Physics.Raycast(R, out RHit, m_eyeSight))
         {
-            World.MakeCoffe(RHit, Za_Warudo.transform);
-        }
-        else if(RHit.transform.gameObject.tag == "Door")
-        {
-            // Open/Close Door
+            if (RHit.transform.gameObject.tag == "StoneBlock" && m_BucketEmpty == false)
+            {
+                World.MakeCoffe(RHit, Za_Warudo.transform);
+            }
+            else if (RHit.transform.gameObject.tag == "Door")
+            {
+                // Open/Close Door
+            }
         }
         
     }

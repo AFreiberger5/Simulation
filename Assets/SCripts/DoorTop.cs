@@ -17,10 +17,11 @@ public class DoorTop : Block
         m_UVs.Clear();
         m_BlockType = BlockType.DOORTOP;
 
-        RenderFront(187);
-        RenderBack(187);
-        RenderLeft(244);
-        RenderRight(244);
+        RenderFront(244);
+        RenderBack(244);
+        RenderLeft(161);
+        RenderRight(161);
+        RenderTop(244);
 
         GenerateMesh();
     }

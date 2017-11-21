@@ -34,14 +34,8 @@ public class StateController : MonoBehaviour
         
         wayPointList = wayPointsFromTriggerZone;
         aiActive = aiActivationFromTriggerZone;
-        if (aiActive)
-        {
-            navMeshAgent.enabled = true;
-        }
-        else
-        {
-            navMeshAgent.enabled = false;
-        }
+        navMeshAgent.enabled = aiActive;
+       
     }
 
     void Update()

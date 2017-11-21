@@ -10,6 +10,7 @@ TagManager:
   - NPC
   - RayDoor
   - TriggerDoor
+  - ABlock
   layers:
   - Default
   - TransparentFX
