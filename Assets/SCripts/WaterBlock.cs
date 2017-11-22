@@ -5,57 +5,43 @@ using UnityEngine;
 
 public class WaterBlock : Block
 {
-    private bool top = false;
+   
 
     public void OnEnable()
-    {
-        transform.rotation = Quaternion.Euler(90, 0, 0);
-        m_BlockType = BlockType.GRASS;
+    {        
+        m_BlockType = BlockType.WATER;
     }
 
     public override void CreateMesh(NeighboursField Neighbours)
     {
+
         m_Vertices.Clear();
         m_Indices.Clear();
         m_UVs.Clear();
-        m_BlockType = BlockType.GRASS;
-        if (!Utils.IsBitSet(Neighbours, (int)NeighboursField.Bottom))
-        {
-            RenderBottom(242);
-        }
-        if (!Utils.IsBitSet(Neighbours, (int)NeighboursField.Top))
-        {
-            RenderTop(178);
-            top = true;
-
-        }
+        m_BlockType = BlockType.WATER;
         if (!Utils.IsBitSet(Neighbours, (int)NeighboursField.Front))
         {
-            if (top)
-                RenderFront(180);
-            else
-                RenderFront(242);
+            RenderFront(254);
         }
         if (!Utils.IsBitSet(Neighbours, (int)NeighboursField.Back))
         {
-            if (top)
-                RenderBack(180);
-            else
-                RenderBack(242);
+            RenderBack(254);
         }
         if (!Utils.IsBitSet(Neighbours, (int)NeighboursField.Left))
         {
-            if (top)
-                RenderLeft(180);
-            else
-                RenderLeft(242);
+            RenderLeft(254);
         }
         if (!Utils.IsBitSet(Neighbours, (int)NeighboursField.Right))
         {
-            if (top)
-                RenderRight(180);
-            else
-                RenderRight(242);
+            RenderRight(254);
+        }
+        if (!Utils.IsBitSet(Neighbours, (int)NeighboursField.Top))
+        {
+            RenderTop(254);
+        }
+        if (!Utils.IsBitSet(Neighbours, (int)NeighboursField.Bottom))
+        {
+            RenderBottom(254);
         }
 
         GenerateMesh();

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public  class World : Singleton<World>
+public class World : Singleton<World>
 {
-    protected  World() { }
+    protected World() { }
 
     public int m_AtlasCols;
     public int m_AtlasRows;
@@ -28,9 +28,9 @@ public  class World : Singleton<World>
     {
         waterBlock = EditorWater;
         m_WorldArray = new Block[40, 8, 40];
-            GenerateTerrain();
+        GenerateTerrain();
     }
-  
+
 
     void GenerateTerrain()
     {
@@ -103,7 +103,7 @@ public  class World : Singleton<World>
         if (z >= 0 && z < m_WorldArray.GetLength(2) - 1)
             if (m_WorldArray[x, y, z + 1].GetBlockType() != BlockType.AIR)
                 Field = (NeighboursField)Utils.SetBit(Field, (int)NeighboursField.Front);
-        
+
         return Field;
     }
 
@@ -136,11 +136,60 @@ public  class World : Singleton<World>
 
         if (m_WorldArray[x, y + 1, z].tag == "ABlock")
         {
-            Destroy(m_WorldArray[x, y, z]);
-            m_WorldArray[x, y, z] = Instantiate(waterBlock, new Vector3(x , y , z), Quaternion.identity);
-            m_WorldArray[x, y, z].CreateMesh(GetNeighbours(x, y, z));
+            //not deleting this code to remember/think about changes easier
+            //Destroy(m_WorldArray[x, y, z]);
+            //m_WorldArray[x, y + 1, z] = Instantiate(waterBlock, new Vector3(_RHit.transform.position.x,
+            //     _RHit.transform.position.y + 1, _RHit.transform.position.z), Quaternion.identity);
+            //m_WorldArray[x, y + 1, z].CreateMesh(GetNeighbours(x, y + 1, z));
+            PourCoffe(_RHit, x, y, z, 0, 1, 0);
+
+        }
+        if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && m_WorldArray[x + 1, y, z].tag == "ABlock")
+        {
+            RaycastHit RHit = _RHit;
+            RHit.transform.position += new Vector3(1, 0, 0);
+            PourCoffe(RHit, x, y, z, 0, 1, 0);
+            MakeCoffe(RHit, _world);
+
+        }
+        if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && m_WorldArray[x - 1, y, z].tag == "ABlock")
+        {
+            RaycastHit RHit = _RHit;
+            RHit.transform.position += new Vector3(-1, 0, 0);
+            PourCoffe(RHit, x, y, z, 0, 1, 0);
+            MakeCoffe(RHit, _world);
+
+        }
+        if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && m_WorldArray[x , y, z+1].tag == "ABlock")
+        {
+            RaycastHit RHit = _RHit;
+            RHit.transform.position += new Vector3(0, 0, 1);
+            PourCoffe(RHit, x, y, z, 0, 1, 0);
+            MakeCoffe(RHit, _world);
+
+        }
+        if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && m_WorldArray[x + 1, y, z-1].tag == "ABlock")
+        {
+            RaycastHit RHit = _RHit;
+            RHit.transform.position += new Vector3(1, 0, -1);
+            PourCoffe(RHit, x, y, z, 0, 1, 0);
+            MakeCoffe(RHit, _world);
+
         }
 
+
+    }
+
+    public static void PourCoffe(RaycastHit _RHit, int _x, int _y, int _z, int _px, int _py, int _pz)
+    {
+        int x = _x + _px;
+        int y = _y + _py;
+        int z = _z + _pz;
+
+        Destroy(m_WorldArray[x, y, z]);
+        m_WorldArray[x, y, z] = Instantiate(waterBlock, new Vector3(_RHit.transform.position.x + _px,
+             _RHit.transform.position.y + _py, _RHit.transform.position.z + _pz), Quaternion.identity);
+        m_WorldArray[x, y, z].CreateMesh(GetNeighbours(x, y, z));
     }
 
     private float map(float value,

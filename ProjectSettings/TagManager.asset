@@ -11,6 +11,7 @@ TagManager:
   - RayDoor
   - TriggerDoor
   - ABlock
+  - wetBlock
   layers:
   - Default
   - TransparentFX

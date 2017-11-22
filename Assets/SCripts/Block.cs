@@ -12,7 +12,8 @@ public enum BlockType
     WOOD,
     RANDOM,
     DOORBOTTOM,
-    DOORTOP
+    DOORTOP,
+    WATER
 }
 
 [Flags]
