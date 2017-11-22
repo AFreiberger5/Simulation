@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class CharController : MonoBehaviour
@@ -70,7 +68,7 @@ public class CharController : MonoBehaviour
         {
             if (RHit.transform.gameObject.tag == "StoneBlock" && m_BucketEmpty == false)
             {
-                World.MakeCoffe(RHit, Za_Warudo.transform);
+                World.BrewCoffee(RHit, Za_Warudo.transform);
             }
             else if (RHit.transform.gameObject.tag == "Door")
             {

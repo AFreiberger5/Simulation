@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.AI;
 
+using UnityEngine.AI;
 
 public class House : MonoBehaviour
 {
     
+    public NavMeshSurface[] n = new NavMeshSurface[2];
     public WoodBlock wooBlock;
     public GrassBlock GBlock;
     public StoneBlock SBlock;
@@ -14,7 +15,7 @@ public class House : MonoBehaviour
     public WaterBlock waterBlock;
     public DoorBottom bottomBlock;
     public DoorTop topBlock;
-
+    
 
     [Range(5, 10)]
     public int WallHeight = 5;
@@ -35,6 +36,7 @@ public class House : MonoBehaviour
     private Block[,,] m_House2Array;
     private int Node;
     private static bool doorRay = false;
+    private bool NPCSpawned = false;
     private void Awake()
     {
         m_StateController = NPC.GetComponent<StateController>();
@@ -45,7 +47,9 @@ public class House : MonoBehaviour
         {
             Node = Random.Range(0, House1Nodes.Length);
             CreateHouse(Node, House1Nodes, 1);
-            //navmesh builden
+           
+
+           
 
             //take patrolpoints from first house
             List<Transform> waypoints = new List<Transform>(House1Nodes[Node].GetComponentsInChildren<Transform>());
@@ -54,6 +58,15 @@ public class House : MonoBehaviour
             //spawn 2nd house
             Node = Random.Range(0, House2Nodes.Length);
             CreateHouse(Node, House2Nodes, 2);
+            //navmesh builden
+            
+            n[0].BuildNavMesh();
+            n[1].BuildNavMesh();
+            if (!NPCSpawned)
+            {
+                Instantiate(NPC, m_House1Array[2, 1, 3].transform.position, Quaternion.identity);
+                NPCSpawned = true;
+            }
 
             m_StateController.SetupAI(true, waypoints);
         }
@@ -171,6 +184,9 @@ public class House : MonoBehaviour
                         m_House1Array[x, y, z].CreateMesh(GetNeighbours(x, y, z));
 
             m_House1Blocks = m_HouseBlocks;
+
+            blockSave.AddComponent<NavMeshSurface>();
+            n[0] = blockSave.GetComponent<NavMeshSurface>();
         }
         else if (_number == 2)
         {
@@ -182,8 +198,10 @@ public class House : MonoBehaviour
 
             m_House2Blocks = m_HouseBlocks;
 
-        }
+            blockSave.AddComponent<NavMeshSurface>();
+            n[1] = blockSave.GetComponent<NavMeshSurface>();
 
+        }
         m_Spawned = true;
     }
     private void DeleteHouse()

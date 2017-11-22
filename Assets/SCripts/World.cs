@@ -128,56 +128,64 @@ public class World : Singleton<World>
         return Mathf.FloorToInt(map(NoiseHeight, 0.7f, 1.5f, 0.0f, Factor));
     }
 
-    public static void MakeCoffe(RaycastHit _RHit, Transform _world)
+    public static void BrewCoffee(RaycastHit _RHit, Transform _world)
     {
-        int x = (int)_RHit.transform.position.x - (int)_world.transform.position.x;
-        int y = (int)_RHit.transform.position.y - (int)_world.transform.position.y;
-        int z = (int)_RHit.transform.position.z - (int)_world.transform.position.z;
-
-        if (m_WorldArray[x, y + 1, z].tag == "ABlock")
+        int x = (int)_RHit.point.x - (int)_world.transform.position.x;
+        int y = (int)_RHit.point.y - (int)_world.transform.position.y;
+        int z = (int)_RHit.point.z - (int)_world.transform.position.z;
+        if (x > m_WorldArray.GetLength(0) - 1 || y > m_WorldArray.GetLength(1) - 1 || z > m_WorldArray.GetLength(2) - 1
+            || x < 0 || y < 0 || z < 0)
         {
-            //not deleting this code to remember/think about changes easier
-            //Destroy(m_WorldArray[x, y, z]);
-            //m_WorldArray[x, y + 1, z] = Instantiate(waterBlock, new Vector3(_RHit.transform.position.x,
-            //     _RHit.transform.position.y + 1, _RHit.transform.position.z), Quaternion.identity);
-            //m_WorldArray[x, y + 1, z].CreateMesh(GetNeighbours(x, y + 1, z));
-            PourCoffe(_RHit, x, y, z, 0, 1, 0);
 
         }
-        if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && m_WorldArray[x + 1, y, z].tag == "ABlock")
+        else
         {
-            RaycastHit RHit = _RHit;
-            RHit.transform.position += new Vector3(1, 0, 0);
-            PourCoffe(RHit, x, y, z, 0, 1, 0);
-            MakeCoffe(RHit, _world);
+
+
+            if (m_WorldArray[x, y + 1, z].tag == "ABlock" && y + 1 < m_WorldArray.GetLength(1))
+            {
+                //not deleting this code to remember/think about changes easier
+                //Destroy(m_WorldArray[x, y, z]);
+                //m_WorldArray[x, y + 1, z] = Instantiate(waterBlock, new Vector3(_RHit.transform.position.x,
+                //     _RHit.transform.position.y + 1, _RHit.transform.position.z), Quaternion.identity);
+                //m_WorldArray[x, y + 1, z].CreateMesh(GetNeighbours(x, y + 1, z));
+                PourCoffe(_RHit, x, y, z, 0, 1, 0);
+
+            }
+            if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && x + 1 < m_WorldArray.GetLength(0) && m_WorldArray[x + 1, y, z].tag == "ABlock")
+            {
+                RaycastHit RHit = _RHit;
+                RHit.point += new Vector3(1, 0, 0);
+                PourCoffe(RHit, x, y, z, 0, 1, 0);
+                BrewCoffee(RHit, _world);
+
+            }
+            // if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && x - 1 >= 0 && m_WorldArray[x - 1, y, z].tag == "ABlock")
+            // {
+            //     RaycastHit RHit = _RHit;
+            //     RHit.point += new Vector3(-1, 0, 0);
+            //     PourCoffe(RHit, x, y, z, 0, 1, 0);
+            //     BrewCoffee(RHit, _world);
+            //
+            // }
+            // if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && z + 1 < m_WorldArray.GetLength(2) && m_WorldArray[x, y, z + 1].tag == "ABlock")
+            // {
+            //     RaycastHit RHit = _RHit;
+            //     RHit.point += new Vector3(0, 0, 1);
+            //     PourCoffe(RHit, x, y, z, 0, 1, 0);
+            //     BrewCoffee(RHit, _world);
+            //
+            // }
+            // if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && z-1 >= 0 && m_WorldArray[x , y, z - 1].tag == "ABlock")
+            // {
+            //     RaycastHit RHit = _RHit;
+            //     RHit.point += new Vector3(1, 0, -1);
+            //     PourCoffe(RHit, x, y, z, 0, 1, 0);
+            //     BrewCoffee(RHit, _world);
+            //
+            // }
 
         }
-        if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && m_WorldArray[x - 1, y, z].tag == "ABlock")
-        {
-            RaycastHit RHit = _RHit;
-            RHit.transform.position += new Vector3(-1, 0, 0);
-            PourCoffe(RHit, x, y, z, 0, 1, 0);
-            MakeCoffe(RHit, _world);
-
-        }
-        if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && m_WorldArray[x , y, z+1].tag == "ABlock")
-        {
-            RaycastHit RHit = _RHit;
-            RHit.transform.position += new Vector3(0, 0, 1);
-            PourCoffe(RHit, x, y, z, 0, 1, 0);
-            MakeCoffe(RHit, _world);
-
-        }
-        if (m_WorldArray[x, y + 1, z].tag == "wetBlock" && m_WorldArray[x + 1, y, z-1].tag == "ABlock")
-        {
-            RaycastHit RHit = _RHit;
-            RHit.transform.position += new Vector3(1, 0, -1);
-            PourCoffe(RHit, x, y, z, 0, 1, 0);
-            MakeCoffe(RHit, _world);
-
-        }
-
-
     }
 
     public static void PourCoffe(RaycastHit _RHit, int _x, int _y, int _z, int _px, int _py, int _pz)
@@ -186,9 +194,11 @@ public class World : Singleton<World>
         int y = _y + _py;
         int z = _z + _pz;
 
-        Destroy(m_WorldArray[x, y, z]);
-        m_WorldArray[x, y, z] = Instantiate(waterBlock, new Vector3(_RHit.transform.position.x + _px,
-             _RHit.transform.position.y + _py, _RHit.transform.position.z + _pz), Quaternion.identity);
+        //Destroy(m_WorldArray[x, y, z]);
+
+        m_WorldArray[x, y, z] = Instantiate(waterBlock, new Vector3(_RHit.point.x + _px,
+             _RHit.point.y + _py, _RHit.point.z + _pz), Quaternion.identity);
+
         m_WorldArray[x, y, z].CreateMesh(GetNeighbours(x, y, z));
     }
 

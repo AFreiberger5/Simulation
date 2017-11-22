@@ -13,7 +13,7 @@ public class StateController : MonoBehaviour
     public State remainState;
 
 
-    [HideInInspector] public NavMeshAgent navMeshAgent;
+    public NavMeshAgent navMeshAgent;
     [HideInInspector] public List<Transform> wayPointList;
     [HideInInspector] public int nextWayPoint;
     [HideInInspector] public Transform chaseTarget;
@@ -45,15 +45,15 @@ public class StateController : MonoBehaviour
         currentState.UpdateState(this);
     }
 
-    void OnDrawGizmos()
-    {
-        if (currentState != null && eyes != null)
-        {
-            Gizmos.color = currentState.sceneGizmoColor;
-            Gizmos.DrawWireSphere(eyes.position, enemyStats.lookSphereCastRadius);
-            
-        }
-    }
+   void OnDrawGizmos()
+   {
+       if (currentState != null && eyes != null)
+       {
+           Gizmos.color = currentState.sceneGizmoColor;
+           Gizmos.DrawWireSphere(eyes.position, enemyStats.lookSphereCastRadius);
+           
+       }
+   }
 
     public void TransitionToState(State nextState)
     {

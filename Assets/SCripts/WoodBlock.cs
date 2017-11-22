@@ -6,12 +6,7 @@ using UnityEngine;
 public class WoodBlock : Block
 {
     
-  // public int m_top;
-  // public int m_bottom;
-  // public int m_front;
-  // public int m_back;
-  // public int m_left;
-  // public int m_right;
+  
     public void OnEnable()
     {
         m_BlockType = BlockType.WOOD;
