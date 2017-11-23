@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public class House : MonoBehaviour
 {
-    
+
     public NavMeshSurface[] n = new NavMeshSurface[2];
     public WoodBlock wooBlock;
     public GrassBlock GBlock;
@@ -15,7 +15,7 @@ public class House : MonoBehaviour
     public WaterBlock waterBlock;
     public DoorBottom bottomBlock;
     public DoorTop topBlock;
-    
+
 
     [Range(5, 10)]
     public int WallHeight = 5;
@@ -47,21 +47,17 @@ public class House : MonoBehaviour
         {
             Node = Random.Range(0, House1Nodes.Length);
             CreateHouse(Node, House1Nodes, 1);
-           
-
-           
 
             //take patrolpoints from first house
             List<Transform> waypoints = new List<Transform>(House1Nodes[Node].GetComponentsInChildren<Transform>());
-            
 
             //spawn 2nd house
             Node = Random.Range(0, House2Nodes.Length);
             CreateHouse(Node, House2Nodes, 2);
             //navmesh builden
-            
-            n[0].BuildNavMesh();
-            n[1].BuildNavMesh();
+
+            // n[0].BuildNavMesh();
+            // n[1].BuildNavMesh();
             if (!NPCSpawned)
             {
                 Instantiate(NPC, m_House1Array[2, 1, 3].transform.position, Quaternion.identity);
@@ -92,7 +88,7 @@ public class House : MonoBehaviour
 
         m_HouseArray = new Block[Ground.GetLength(0), m_HouseBlocks.Length, Ground.GetLength(1)];
 
-     
+
 
         GameObject blockSave = new GameObject("house");
         for (int y = 0; y < m_HouseBlocks.Length; y++)
@@ -112,7 +108,7 @@ public class House : MonoBehaviour
                     {
                         switch (Block)
                         {
-                            
+
                             case 0:
                                 m_HouseArray[x, y, z] = Instantiate(wooBlock, new Vector3(x + (int)HouseNodes[Node].transform.position.x,
                                     y + (int)HouseNodes[Node].transform.position.y, z + (int)HouseNodes[Node].transform.position.z), Quaternion.identity, blockSave.transform);
@@ -122,7 +118,7 @@ public class House : MonoBehaviour
                                     y + (int)HouseNodes[Node].transform.position.y, z + (int)HouseNodes[Node].transform.position.z), Quaternion.identity, blockSave.transform);
                                 break;
                             case 2:
-                                m_HouseArray[x, y, z] = Instantiate(SBlock, new Vector3(x + (int)HouseNodes[Node].transform.position.x, 
+                                m_HouseArray[x, y, z] = Instantiate(SBlock, new Vector3(x + (int)HouseNodes[Node].transform.position.x,
                                     y + (int)HouseNodes[Node].transform.position.y, z + (int)HouseNodes[Node].transform.position.z), Quaternion.identity, blockSave.transform);
                                 break;
                             case 3:
@@ -157,11 +153,11 @@ public class House : MonoBehaviour
             //todo: find out why the first house isn't getting spawned
             Destroy(m_HouseArray[4, 1, 2]);
             Destroy(m_HouseArray[4, 2, 2]);
-            m_HouseArray[4, 1, 2] = Instantiate(bottomBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 1 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity);
             m_HouseArray[4, 2, 2] = Instantiate(topBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 2 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity);
-            m_HouseArray[4, 1, 2].tag = "RayDoor";
-            m_HouseArray[4, 2, 2].tag = "RayDoor";
-            
+            m_HouseArray[4, 1, 2] = Instantiate(bottomBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 1 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity, m_HouseArray[4, 2, 2].transform);
+            m_HouseArray[4, 1, 2].tag = "RayDoorBottom";
+            m_HouseArray[4, 2, 2].tag = "RayDoorTop";
+
             doorRay = true;
 
         }
@@ -169,10 +165,14 @@ public class House : MonoBehaviour
         {
             Destroy(m_HouseArray[4, 1, 2]);
             Destroy(m_HouseArray[4, 2, 2]);
-            m_HouseArray[4, 1, 2] = Instantiate(bottomBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 1 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity);
             m_HouseArray[4, 2, 2] = Instantiate(topBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 2 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity);
-            m_HouseArray[4, 1, 2].tag = "TriggerDoor";
-            m_HouseArray[4, 2, 2].tag = "TriggerDoor";
+            m_HouseArray[4, 1, 2] = Instantiate(bottomBlock, new Vector3(4 + (int)HouseNodes[Node].transform.position.x, 1 + (int)HouseNodes[Node].transform.position.y, 2 + (int)HouseNodes[Node].transform.position.z), Quaternion.identity, m_HouseArray[4, 2, 2].transform);
+            m_HouseArray[4, 1, 2].tag = "TriggerDoorBottom";
+            m_HouseArray[4, 2, 2].tag = "TriggerDoorTop";
+            m_HouseArray[4, 1, 2].GetOrAddComponent<BoxCollider>();
+            m_HouseArray[4, 1, 2].GetOrAddComponent<BoxCollider>().isTrigger = true;
+            m_HouseArray[4, 1, 2].GetOrAddComponent<BoxCollider>().size = new Vector3(20, 2, 4);
+
 
         }
         if (_number == 1)

@@ -54,7 +54,7 @@ public class World : Singleton<World>
                 continue;
             Destroy(B.gameObject);
         }
-
+        GameObject blockSave = new GameObject("world");
         for (int x = 0; x < m_WorldArray.GetLength(0); ++x)
             for (int z = 0; z < m_WorldArray.GetLength(2); ++z)
             {
@@ -64,14 +64,14 @@ public class World : Singleton<World>
                 {
                     if (y < 5)
                         if (StoneNoise >= y)
-                            m_WorldArray[x, y, z] = Instantiate(SBlock, new Vector3(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z), Quaternion.identity);
+                            m_WorldArray[x, y, z] = Instantiate(SBlock, new Vector3(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z), Quaternion.identity, blockSave.transform);
                         else
-                            m_WorldArray[x, y, z] = Instantiate(ABlock, new Vector3(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z), Quaternion.identity);
+                            m_WorldArray[x, y, z] = Instantiate(ABlock, new Vector3(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z), Quaternion.identity, blockSave.transform);
                     else
                         if (GrassNoise >= y - 4)
-                        m_WorldArray[x, y, z] = Instantiate(GBlock, new Vector3(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z), Quaternion.identity);
+                        m_WorldArray[x, y, z] = Instantiate(GBlock, new Vector3(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z), Quaternion.identity, blockSave.transform);
                     else
-                        m_WorldArray[x, y, z] = Instantiate(ABlock, new Vector3(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z), Quaternion.identity);
+                        m_WorldArray[x, y, z] = Instantiate(ABlock, new Vector3(x + (int)transform.position.x, y + (int)transform.position.y, z + (int)transform.position.z), Quaternion.identity, blockSave.transform);
                 }
             }
         for (int x = 0; x < m_WorldArray.GetLength(0); ++x)

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DoorBottom : Block
 {
+    
 
     public void OnEnable()
     {
@@ -25,4 +26,10 @@ public class DoorBottom : Block
 
         GenerateMesh();
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+            GetComponentInParent<DoorTop>().OpenClose();
+    }
+
 }

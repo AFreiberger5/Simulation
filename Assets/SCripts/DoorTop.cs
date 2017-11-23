@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DoorTop : Block
 {
+    private bool m_doorOpen = false;
 
     public void OnEnable()
     {
@@ -24,5 +25,22 @@ public class DoorTop : Block
         RenderTop(244);
 
         GenerateMesh();
+    }
+
+    public void OpenClose()
+    {
+        if (m_doorOpen)
+        {
+            transform.Rotate(0, -90, 0);
+            transform.position += new Vector3(0, 0, -0.4f);
+            m_doorOpen = false;
+        }
+        else if (!m_doorOpen)
+        {
+            transform.Rotate(0, 90, 0);
+            transform.position += new Vector3(0, 0, 0.4f);
+
+            m_doorOpen = true;
+        }
     }
 }
