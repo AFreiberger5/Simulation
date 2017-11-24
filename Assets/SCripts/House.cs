@@ -28,6 +28,7 @@ public class House : MonoBehaviour
     [HideInInspector] public StateController m_StateController;
 
     private bool m_Spawned = false;
+    //todo: check if house1/2 blocks are needed for editor view or can be removed 
     private int[][,] m_HouseBlocks;
     private int[][,] m_House1Blocks;
     private int[][,] m_House2Blocks;
@@ -40,6 +41,10 @@ public class House : MonoBehaviour
     private void Awake()
     {
         m_StateController = NPC.GetComponent<StateController>();
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        //todo: add swirl effects that start/stop when enter-/leaving triggerzone
     }
     private void OnTriggerEnter(Collider other)
     {
